@@ -1,0 +1,11 @@
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+
+    ssl_certificate
+    ssl_certificate_key 
+
+    ssl_protocol TLSv1.2 TLSv1.3;
+
+    server_name tbillon.42.fr
+}
