@@ -6,7 +6,7 @@
 #    By: tanguy <tanguy@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/06 09:35:58 by tanguy            #+#    #+#              #
-#    Updated: 2021/10/06 09:39:28 by tanguy           ###   ########.fr        #
+#    Updated: 2021/10/07 10:09:52 by tanguy           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,3 +25,15 @@ stop:
 # stop service and remove containers, networks
 down:
 		@ docker-compose -f $(COMP_FILE) down
+
+# rm images, containers, volumes
+clean :
+	?????
+
+# remove all unused containers, networks, images
+prune :
+	@ docker system prune
+
+# show containers
+ps :
+	@ docker-compose -f $(COMP_FILE) ps
