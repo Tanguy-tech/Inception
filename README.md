@@ -10,3 +10,4 @@ contact: tbillon@student.42lyon.fr
 - appels systems : https://fr.wikipedia.org/wiki/Chown
 - Docker et références : https://docs.docker.com/engine/reference/builder/
 - Nginx : https://nginx.org/en/docs/beginners_guide.html
+- Mysql : https://dev.mysql.com/doc/refman/8.0/en/mysqld.html
