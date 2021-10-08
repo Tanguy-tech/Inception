@@ -24,7 +24,7 @@ services:
       - wordpress
     build: ./requirements/nginx #build from the Dockerfile in the dir
     container_name: nginx
-    port:
+    ports:
       - 443:443
     volumes: #to reuse a volume across multiple services
       - wordpress:/var/www/
@@ -37,7 +37,7 @@ services:
       - mariadb
     build: ./requirements/wordpress
     container_name: wordpress
-    port:
+    ports:
       - 9000:9000
     env_file: .env #specify en environement file to work with
     volumes:
@@ -49,7 +49,7 @@ services:
   mariadb:
     build: ./requirements/mariadb
     container_name: mariadb
-    port:
+    ports:
       - 3306:3306
     env_file: .env
     volumes:
