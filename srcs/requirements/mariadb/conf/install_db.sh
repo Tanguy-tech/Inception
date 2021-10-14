@@ -1,36 +1,24 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
+#    install_db.sh                                      :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: tanguy <tanguy@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/10/06 09:35:58 by tanguy            #+#    #+#              #
-#    Updated: 2021/10/14 11:53:30 by tanguy           ###   ########.fr        #
+#    Created: 2021/10/08 11:06:20 by tanguy            #+#    #+#              #
+#    Updated: 2021/10/14 11:36:12 by tanguy           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-COMP_FILE = srcs/docker-compose.yml
-CLEAN = srcs/requirements/tools/clean.sh
+#!/bin/sh
 
-all: up
+until mysql
+do
+	echo "NO_UP"
+done
 
-up:
-		@docker-compose -f $(COMP_FILE) up --build -d
-
-stop:
-		@docker-compose -f $(COMP_FILE) stop
-
-down:
-		@docker-compose -f $(COMP_FILE) down
-
-clean:
-		@sh $(CLEAN)
-
-prune :
-		@docker system prune
-
-ps :
-		@docker-compose -f $(COMP_FILE) ps
-
-.PHONY: all up stop down clean ps
+mysql -e "CREATE USER '${MYSQL_USR}'@'localhost' IDENTIFIED BY '${MYSQL_PSWD}';"
+mysql -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DB};"
+mysql -e "GRANT ALL PRIVILEGES ON *.* TO '${MYSQL_USR}'@'%' IDENTIFIED BY '${MYSQL_PSWD}';"
+mysql -e "FLUSH PRIVILEGES;"
+mysql -u root -p$MYSQL_ROOT_PASSWORD $MYSQL_DB < /base.sql

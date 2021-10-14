@@ -6,24 +6,37 @@
 #    By: tanguy <tanguy@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/05 10:29:24 by tanguy            #+#    #+#              #
-#    Updated: 2021/10/07 10:36:32 by tanguy           ###   ########.fr        #
+#    Updated: 2021/10/14 11:59:23 by tanguy           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-FROM debian:buster
+FROM    debian:buster
+LABEL   maintainer="tbillon"
 
+#update
 RUN apt-get -y update
+#install nginx
 RUN apt-get -y install nginx
+
+#install openssl
 RUN apt-get install openssl
 
-COPY conf/nginx_conf ./
+#generate keys
+RUN openssl req -newkey rsa:4096 \
+    -x509 \
+    -sha256 \
+    -days 365 \
+    -nodes \
+    -out /etc/ssl/tbillon.crt \
+    -keyout /etc/ssl/tbillon.key \
+    -subj "/C=FR/ST=Lyon/L=Lyon/O=42School/OU=tbillon/CN=tbillon"
 
-RUN openssl -req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out /etc/ssl/tbillon.crt -keyout /etc/ssl/tbillon.key -suj "/C=FR/ST=Lyon/L=Lyon/O=42School/OU=tbillon/CN=tbillon"
+# Copy confile files
+COPY		conf/nginx.conf /etc/nginx/http.d/default.conf
+RUN			ln -fs /etc/nginx/http.d/default.conf /etc/nginx/conf.d/default.conf
 
-RUN cp ./default etc/nginx/sites-available
-RUN chown -R www-data /var/www/* 
-RUN chmod -R 755 /var/www/*
+# Start server
+CMD			["nginx", "-g", "daemon off;"]
 
-CMD ["nginx", "-g", "deamon off;"]
-
-EXPOSE 443
+# Ports
+EXPOSE		443

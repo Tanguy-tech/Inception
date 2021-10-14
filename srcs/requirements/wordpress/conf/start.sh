@@ -6,19 +6,20 @@
 #    By: tanguy <tanguy@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/08 12:02:22 by tanguy            #+#    #+#              #
-#    Updated: 2021/10/08 12:32:16 by tanguy           ###   ########.fr        #
+#    Updated: 2021/10/14 11:22:25 by tanguy           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-mkdir /var/www/wordpress
-cd /var/www/wordpress
-mv /wp-config.php ./
-wp core download --allow-root
-wp core install --url="https://tbillon.42.fr" --title="INCEPTION/ $1" --admin_user=$ADMIN_USR --admin_password=$ADMIN_PSWD --admin_email=$ADMIN_EMAIL --allow-root
-wp user create $USER_NAME $USER_EMAIL --user_pass=$USER_PSWD --role=editor --allow-root
+#!/bin/sh
 
-chown www-data:www-data /var/www
-chmod 744 /var/www
+mv /wordpress/* /var/www/html/.
 
-mkdir -p /run/php/
+cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
+sed -i 's/votre_nom_de_bdd/'$WORDPRESS_DB_NAME'/' /var/www/html/wp-config.php
+sed -i 's/votre_utilisateur_de_bdd/'$WORDPRESS_USR'/' /var/www/html/wp-config.php
+sed -i 's/votre_mdp_de_bdd/'$WORDPRESS_PSWD'/' /var/www/html/wp-config.php
+sed -i 's/localhost/'$WORDPRESS_DB_HOST'/' /var/www/html/wp-config.php
+sed -i 's/wp_/'$WORDPRESS_TABLE_PREFIX'/' /var/www/html/wp-config.php
+chown -R www-data:www-data /var/www/html
+
 exec php-fpm7.3 -F
