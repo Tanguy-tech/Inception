@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Dockerfile                                         :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tanguy <tanguy@student.42.fr>              +#+  +:+       +#+         #
+#    By: tbillon <tbillon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/08 11:57:03 by tanguy            #+#    #+#              #
-#    Updated: 2021/10/14 11:37:05 by tanguy           ###   ########.fr        #
+#    Updated: 2021/10/20 13:03:10 by tbillon          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ COPY		conf/www.conf /etc/php/7.3/fpm/pool.d/www.conf
 WORKDIR		/var/www/html
 
 # Start server
-ENTRYPOINT	["/conf/start.sh"]
+ENTRYPOINT	["/entrypoint-wordpress.sh"]
 
 # Ports
 EXPOSE		9000

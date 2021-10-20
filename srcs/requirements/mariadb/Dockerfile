@@ -6,7 +6,7 @@
 #    By: tbillon <tbillon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/08 11:50:22 by tanguy            #+#    #+#              #
-#    Updated: 2021/10/20 10:50:07 by tbillon          ###   ########.fr        #
+#    Updated: 2021/10/20 13:02:32 by tbillon          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ RUN			chmod +x /install_db.sh
 COPY		conf/mariadb.cnf /etc/mysql/my.cnf
 
 # Start server
-ENTRYPOINT	["/conf/entrypoint.sh"]
+ENTRYPOINT	["/entrypoint-mariadb.sh"]
 
 # Ports
 EXPOSE		3306

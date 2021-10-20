@@ -4,19 +4,19 @@ networks:
   inception:
 
 volumes:
-  wordpress:
-    driver: local
-    driver_opts: #Specify a list of options as key-value pairs to pass to the driver for this volume
-      type: 'none' #no physical partition linked to mount point
-      o: 'bind' #bind mount: file or directory on the host machine is mounted into a container
-      device: ${PWD}/wordpress #$PWD expand current working dir to avoid specifying full paths
+  wordpress: {}
+    # driver: local
+    # driver_opts: #Specify a list of options as key-value pairs to pass to the driver for this volume
+    #   type: 'none' #no physical partition linked to mount point
+    #   o: 'bind' #bind mount: file or directory on the host machine is mounted into a container
+    #   device: ${PWD}/wordpress #$PWD expand current working dir to avoid specifying full paths
 
-  db:
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: ${PWD}/database
+  db: {}
+    # driver: local
+    # driver_opts:
+    #   type: 'none'
+    #   o: 'bind'
+    #   device: ${PWD}/database/
 
 services:
   nginx:
