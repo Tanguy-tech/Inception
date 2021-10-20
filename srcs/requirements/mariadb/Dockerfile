@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Dockerfile                                         :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: tanguy <tanguy@student.42.fr>              +#+  +:+       +#+         #
+#    By: tbillon <tbillon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/08 11:50:22 by tanguy            #+#    #+#              #
-#    Updated: 2021/10/14 11:34:09 by tanguy           ###   ########.fr        #
+#    Updated: 2021/10/20 10:50:07 by tbillon          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ RUN apt-get -y update
 #install mariadb
 RUN apt-get install -y mariadb-server mariadb-client
 
-# Copy confile files
+# Copy confg files
 COPY		conf/entrypoint.sh /entrypoint-mariadb.sh
 COPY		conf/install_db.sh /install_db.sh
 COPY		conf/base.sql /base.sql
