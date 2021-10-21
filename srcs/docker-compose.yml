@@ -20,8 +20,8 @@ volumes:
 
 services:
   nginx:
-    # depends_on: #Express dependency between services. Start services in depedency order
-    #   - wordpress
+    depends_on: #Express dependency between services. Start services in depedency order
+      - wordpress
     build: ./requirements/nginx #build from the Dockerfile in the dir
     container_name: nginx
     ports:
