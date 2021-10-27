@@ -6,7 +6,7 @@
 #    By: tbillon <tbillon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/08 11:57:03 by tanguy            #+#    #+#              #
-#    Updated: 2021/10/20 13:03:10 by tbillon          ###   ########.fr        #
+#    Updated: 2021/10/27 15:12:21 by tbillon          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,26 +15,29 @@ LABEL   maintainer="tbillon"
 
 #update 
 RUN apt-get -y update
+
 #install packages needed
 RUN apt-get -y install wget
 RUN apt-get -y install curl
 RUN apt-get -y install unzip
+
 #install php
-RUN apt-get -y install php7.3 php7.3-fpm php7.3-mysql php-common php7.3-common php7.3-json php7.3-readline
+RUN     apt-get -y install php7.3 php7.3-fpm php7.3-mysql php-common php7.3-common php7.3-json php7.3-readline
 
-ADD			https://fr.wordpress.org/wordpress-5.7.2-fr_FR.tar.gz /wp.tar.gz
-RUN			tar -xf /wp.tar.gz && rm -f /wp.tar.gz
+COPY    conf/wp-config.php ./
+COPY    conf/www.conf /etc/php/7.3/fpm/pool.d
+COPY    conf/start.sh ./
 
-# Copy confile files
-RUN			mkdir -p /run/php
-COPY		conf/start.sh /entrypoint-wordpress.sh
-RUN			chmod +x /entrypoint-wordpress.sh
-COPY		conf/www.conf /etc/php/7.3/fpm/pool.d/www.conf
+#download config && open rights 
+RUN     curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+RUN     chmod +x wp-cli.phar
+RUN     mv wp-cli.phar /usr/local/bin/wp
 
-WORKDIR		/var/www/html
+#Open rights on start.sh file
+RUN     chmod +x start.sh
 
 # Start server
-ENTRYPOINT	["/entrypoint-wordpress.sh"]
+CMD	["/start.sh"]
 
 # Ports
 EXPOSE		9000

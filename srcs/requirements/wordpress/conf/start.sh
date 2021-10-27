@@ -1,12 +1,13 @@
 #!/bin/sh
-mv /wordpress/* /var/www/html/.
+mkdir var/www/wordpress
+cd /var/www/wordpress
+mv /wp-config.php ./
+wp core download --allow-root
+wp core install --url="https://tbillon.42.fr" --title="ENFIN/ $1" --admin_user=$WORDPRESS_USR --admin_password=$WORDPRESS_PSWD --admin_email=$WORDPRESS_EMAIL --allow-root
+wp user create $USER_NAME $USER_EMAIL --user_pass=$USER_PSWD --role=editor --allow-root
 
-cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
-sed -i 's/votre_nom_de_bdd/'$WORDPRESS_DB_NAME'/' /var/www/html/wp-config.php
-sed -i 's/votre_utilisateur_de_bdd/'$WORDPRESS_USR'/' /var/www/html/wp-config.php
-sed -i 's/votre_mdp_de_bdd/'$WORDPRESS_PSWD'/' /var/www/html/wp-config.php
-sed -i 's/localhost/'$WORDPRESS_DB_HOST'/' /var/www/html/wp-config.php
-sed -i 's/wp_/'$WORDPRESS_TABLE_PREFIX'/' /var/www/html/wp-config.php
-chown -R www-data:www-data /var/www/html
+chown www-data:www-data /var/www
+chmod 744 /var/www
 
+mkdir -p /run/php/
 exec php-fpm7.3 -F
