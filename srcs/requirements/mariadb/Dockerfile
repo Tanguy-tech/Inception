@@ -6,7 +6,7 @@
 #    By: tbillon <tbillon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/08 11:50:22 by tanguy            #+#    #+#              #
-#    Updated: 2021/10/20 13:02:32 by tbillon          ###   ########.fr        #
+#    Updated: 2021/10/28 10:50:46 by tbillon          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,19 +15,21 @@ LABEL   maintainer="tbillon"
 
 #update
 RUN apt-get -y update
+
 #install mariadb
 RUN apt-get install -y mariadb-server mariadb-client
 
-# Copy confg files
-COPY		conf/entrypoint.sh /entrypoint-mariadb.sh
-COPY		conf/install_db.sh /install_db.sh
-COPY		conf/base.sql /base.sql
-RUN			chmod +x /entrypoint-mariadb.sh
-RUN			chmod +x /install_db.sh
-COPY		conf/mariadb.cnf /etc/mysql/my.cnf
+#Copy confg files
+COPY	conf/install_db.sh ./
+RUN		rm /etc/mysql/mariadb.conf.d/50-server.cnf
+COPY	conf/mariadb.cnf /etc/mysql/mariadb.conf.d/
 
-# Start server
-ENTRYPOINT	["/entrypoint-mariadb.sh"]
+#Open rights
+RUN     chown -R mysql:mysql /var/lib/mysql
+RUN     chmod 777 /var/lib/*
 
-# Ports
+#Start server
+CMD	    ["bash", "conf/install_db.sh"]
+
+#Ports
 EXPOSE		3306

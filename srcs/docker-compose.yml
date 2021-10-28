@@ -4,37 +4,37 @@ networks:
   inception:
 
 volumes:
-  wordpress: {}
-    # driver: local
-    # driver_opts: #Specify a list of options as key-value pairs to pass to the driver for this volume
-    #   type: 'none' #no physical partition linked to mount point
-    #   o: 'bind' #bind mount: file or directory on the host machine is mounted into a container
-    #   device: ${PWD}/wordpress #$PWD expand current working dir to avoid specifying full paths
+  wordpress:
+    driver: local
+    driver_opts: #Specify a list of options as key-value pairs to pass to the driver for this volume
+      type: 'none' #no physical partition linked to mount point
+      o: 'bind' #bind mount: file or directory on the host machine is mounted into a container
+      device: ${PWD}/wordpress #$PWD expand current working dir to avoid specifying full paths
 
-  db: {}
-    # driver: local
-    # driver_opts:
-    #   type: 'none'
-    #   o: 'bind'
-    #   device: ${PWD}/database/
+  db:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: ${PWD}/database/
 
 services:
-  # nginx:
-  #   # depends_on: #Express dependency between services. Start services in depedency order
-  #   #   - wordpress
-  #   build: ./requirements/nginx #build from the Dockerfile in the dir
-  #   container_name: nginx
-  #   ports:
-  #     - 443:443
-  #   volumes: #to reuse a volume across multiple services
-  #     - wordpress:/var/www/
-  #   restart: always #restarts containers that exit with zero ( success ) exit code
-  #   networks: #Set the network containers connect to for the RUN instructions during build
-  #     - inception
+  nginx:
+    depends_on: #Express dependency between services. Start services in depedency order
+      - wordpress
+    build: ./requirements/nginx #build from the Dockerfile in the dir
+    container_name: nginx
+    ports:
+      - 443:443
+    volumes: #to reuse a volume across multiple services
+      - wordpress:/var/www/
+    restart: always #restarts containers that exit with zero ( success ) exit code
+    networks: #Set the network containers connect to for the RUN instructions during build
+      - inception
 
   wordpress:
-    # depends_on:
-    #   - mariadb
+    depends_on:
+      - mariadb
     build: ./requirements/wordpress
     container_name: wordpress
     ports:
@@ -46,14 +46,14 @@ services:
     networks:
       - inception
 
-  # mariadb:
-  #   build: ./requirements/mariadb
-  #   container_name: mariadb
-  #   ports:
-  #     - 3306:3306
-  #   env_file: .env
-  #   volumes:
-  #     - db:/var/lib/mysql/
-  #   restart: always
-  #   networks:
-  #     - inception
+  mariadb:
+    build: ./requirements/mariadb
+    container_name: mariadb
+    ports:
+      - 3306:3306
+    env_file: .env
+    volumes:
+      - db:/var/lib/mysql/
+    restart: always
+    networks:
+      - inception
