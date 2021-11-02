@@ -19,32 +19,32 @@ volumes:
     #   device: ${PWD}/database/
 
 services:
-  # nginx:
-  #   depends_on: #Express dependency between services. Start services in depedency order
-  #     - wordpress
-  #   build: ./requirements/nginx #build from the Dockerfile in the dir
-  #   container_name: nginx
-  #   ports:
-  #     - 443:443
-  #   volumes: #to reuse a volume across multiple services
-  #     - wordpress:/var/www/
-  #   restart: always #restarts containers that exit with zero ( success ) exit code
-  #   networks: #Set the network containers connect to for the RUN instructions during build
-  #     - inception
+  nginx:
+    depends_on: #Express dependency between services. Start services in depedency order
+      - wordpress
+    build: ./requirements/nginx #build from the Dockerfile in the dir
+    container_name: nginx
+    ports:
+      - 443:443
+    volumes: #to reuse a volume across multiple services
+      - wordpress:/var/www/
+    restart: always #restarts containers that exit with zero ( success ) exit code
+    networks: #Set the network containers connect to for the RUN instructions during build
+      - inception
 
-  # wordpress:
-  #   depends_on:
-  #     - mariadb
-  #   build: ./requirements/wordpress
-  #   container_name: wordpress
-  #   ports:
-  #     - 9000:9000
-  #   env_file: .env #specify en environement file to work with
-  #   volumes:
-  #       - wordpress:/var/www/
-  #   restart: always
-  #   networks:
-  #     - inception
+  wordpress:
+    depends_on:
+      - mariadb
+    build: ./requirements/wordpress
+    container_name: wordpress
+    ports:
+      - 9000:9000
+    env_file: .env #specify en environement file to work with
+    volumes:
+        - wordpress:/var/www/
+    restart: always
+    networks:
+      - inception
 
   mariadb:
     build: ./requirements/mariadb
