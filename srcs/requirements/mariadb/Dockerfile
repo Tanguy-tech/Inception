@@ -6,7 +6,7 @@
 #    By: tbillon <tbillon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/08 11:50:22 by tanguy            #+#    #+#              #
-#    Updated: 2022/03/03 11:12:58 by tbillon          ###   ########.fr        #
+#    Updated: 2022/03/03 16:48:38 by tbillon          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,17 +19,19 @@ RUN apt-get update -y
 #install mariadb
 RUN apt-get install -y mariadb-server mariadb-client
 
-#Copy confg files
-COPY	conf/install_db.sh ./
-#RUN		rm /etc/mysql/mariadb.conf.d/50-server.cnf
-COPY	conf/mariadb.cnf /etc/mysql/mariadb.conf.d/
+RUN sed -i 's/bind-address/bind-address = 0.0.0 #/i' /etc/mysql/mariadb.conf.d/50-server.cnf
 
-#Open rights
-RUN     chown -R mysql:mysql /var/lib/mysql
-RUN     chmod 777 /var/lib/*
+COPY conf/myconf.sql /tmp/
 
-#Start server
-CMD	    ["bash", "install_db.sh"]
+ARG MYSQL_ROOT_PWD
+ARG WP_DB_NAME
+ARG WP_DB_USR
+ARG WP_DB_PWD
 
-#Ports
-EXPOSE		3306
+RUN sed -i 's/MYSQL_ROOT_PWD/'"${MYSQL_ROOT_PWD}"'/i' /tmp/myconf.sql \
+    && sed -i 's/WP_DB_NAME/'"${WP_DB_NAME}"'/i' /tmp/myconf.sql \
+    && sed -i 's/WP_DB_USR/'"${WP_DB_USR}"'/i' /tmp/myconf.sql \
+    && sed -i 's/WP_DB_PWD/'"${WP_DB_PWD}"'/i' /tmp/myconf.sql
+
+RUN /etc/init.d/mysql start && mysql -u root --password="root" -e "source /tmp/myconf.sql"
+CMD mysql_safe
