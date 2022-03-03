@@ -6,7 +6,7 @@
 #    By: tbillon <tbillon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/05 10:29:24 by tanguy            #+#    #+#              #
-#    Updated: 2021/10/27 14:40:17 by tbillon          ###   ########.fr        #
+#    Updated: 2022/03/03 16:57:54 by tbillon          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,31 +22,26 @@ RUN apt-get -y install nginx
 #Install openssl
 RUN apt-get install openssl
 
+#Ports
+EXPOSE		443
+
 #Open access Rights
-RUN     chown -R www-data /var/www/*
-RUN     chmod -R 755 /var/www/*
+# RUN     chown -R www-data /var/www/*
+# RUN     chmod -R 755 /var/www/*
 
 #Generate keys and self signed SSL Certificates
+RUN mkdir /etc/nginx/ssl
 RUN openssl req -newkey rsa:4096 \
     -x509 \
     -sha256 \
     -days 365 \
     -nodes \
-    -out /etc/ssl/tbillon.crt \
-    -keyout /etc/ssl/tbillon.key \
-    -subj "/C=FR/ST=Lyon/L=Lyon/O=42School/OU=tbillon/CN=tbillon"
+    -out /etc/nginx/ssl/tbillon.crt \
+    -keyout /etc/nginx/ssl/tbillon.key \
+    -subj "/C=FR/ST=Lyon/L=Lyon/O=42 School/OU=tbillon/CN=tbillon"
 
-#Generate website folder
-RUN     mkdir /var/www/mywebsite
-
-#Configure Nginx
-COPY    conf/nginx.conf /etc/nginx/sites-available/mywebsite
-RUN     ln -s /etc/nginx/sites-available/mywebsite /etc/nginx/sites-enabled/mywebsite	
-RUN     rm -rf /etc/nginx/sites-enabled/default 
-RUN     mkdir /var/www/mywebsite/nginx
+RUN mkdir -p /run/nginx
+COPY conf/nginx.conf /etc/nginx/conf.d/default.conf
 
 #Start server
-CMD			["nginx", "-g", "daemon off;"]
-
-#Ports
-EXPOSE		443
+ENTRYPOINT [ "nginx", "-g", "daemon off;" ]

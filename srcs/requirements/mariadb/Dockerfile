@@ -6,7 +6,7 @@
 #    By: tbillon <tbillon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/08 11:50:22 by tanguy            #+#    #+#              #
-#    Updated: 2022/03/03 16:48:38 by tbillon          ###   ########.fr        #
+#    Updated: 2022/03/03 16:57:39 by tbillon          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,8 +21,10 @@ RUN apt-get install -y mariadb-server mariadb-client
 
 RUN sed -i 's/bind-address/bind-address = 0.0.0 #/i' /etc/mysql/mariadb.conf.d/50-server.cnf
 
+#copy conf file
 COPY conf/myconf.sql /tmp/
 
+#include args
 ARG MYSQL_ROOT_PWD
 ARG WP_DB_NAME
 ARG WP_DB_USR
