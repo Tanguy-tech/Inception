@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Dockerfile                                         :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: Tanguy <Tanguy@student.42.fr>              +#+  +:+       +#+         #
+#    By: tbillon <tbillon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/08 11:50:22 by tanguy            #+#    #+#              #
-#    Updated: 2021/11/02 11:07:47 by Tanguy           ###   ########.fr        #
+#    Updated: 2022/03/03 11:12:58 by tbillon          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ FROM    debian:buster
 LABEL   maintainer="tbillon"
 
 #update
-RUN apt-get -y update
+RUN apt-get update -y
 
 #install mariadb
 RUN apt-get install -y mariadb-server mariadb-client

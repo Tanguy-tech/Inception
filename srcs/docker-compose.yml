@@ -1,59 +1,150 @@
 version: "3.8"
 
-networks:
-  inception:
-
-volumes:
-  wordpress: {}
-    # driver: local
-    # driver_opts: #Specify a list of options as key-value pairs to pass to the driver for this volume
-    #   type: 'none' #no physical partition linked to mount point
-    #   o: 'bind' #bind mount: file or directory on the host machine is mounted into a container
-    #   device: ${PWD}/wordpress #$PWD expand current working dir to avoid specifying full paths
-
-  db: {}
-    # driver: local
-    # driver_opts:
-    #   type: 'none'
-    #   o: 'bind'
-    #   device: ${PWD}/database/
-
 services:
-  nginx:
-    depends_on: #Express dependency between services. Start services in depedency order
-      - wordpress
-    build: ./requirements/nginx #build from the Dockerfile in the dir
-    container_name: nginx
+
+  ngnix:
+    build: requirements/nginx/
+    container_name: ngnix
     ports:
-      - 443:443
-    volumes: #to reuse a volume across multiple services
-      - wordpress:/var/www/
-    restart: always #restarts containers that exit with zero ( success ) exit code
-    networks: #Set the network containers connect to for the RUN instructions during build
+      - "443:443"
+    restart: on-failure
+    env_file:
+      - .env
+    volumes:
+      - wordpress
+      - mariadb
+    networks:
       - inception
 
   wordpress:
+    build:
+      context: requirements/wordpress/
+      args:
+        MYSQL_HOST: ${MYSQL_HOST}
+        WP_DB_NAME: ${WP_DB_NAME}
+        WP_DB_USR: ${WP_DB_USR}
+        WP_DB_PWD: ${WP_DB_PWD}
+        WP_ADMIN_USR: ${WP_ADMIN_USR}
+        WP_ADMIN_PWD: ${WP_ADMIN_PWD}
+        WP_ADMIN_MAIL: ${WP_ADMIN_MAIL}
+    container_name: wordpress
+    restart: on-failure
+    env_file:
+      - .env
+    volumes:
+      - wp_data/var/www/html
     depends_on:
       - mariadb
-    build: ./requirements/wordpress
-    container_name: wordpress
-    ports:
-      - 9000:9000
-    env_file: .env #specify en environement file to work with
-    volumes:
-        - wordpress:/var/www/
-    restart: always
     networks:
       - inception
-
+      - backend
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST}
+      WP_DB_NAME: ${WP_DB_NAME}
+      WP_DB_USR: ${WP_DB_USR}
+      WP_DB_PWD: ${WP_DB_PWD}
+      WP_ADMIN_USR: ${WP_ADMIN_USR}
+      WP_ADMIN_PWD: ${WP_ADMIN_PWD}
+      WP_ADMIN_MAIL: ${WP_ADMIN_MAIL}
+  
   mariadb:
-    build: ./requirements/mariadb
+    build:
+      context: requirements/mariadb/
+      args:
+        MYSQL_ROOT_PWD: ${MYSQL_ROOT_PWD}
+        WP_DB_NAME: ${WP_DB_NAME}
+        WP_DB_USR: ${WP_DB_USR}
+        WP_DB_PWD: ${WP_DB_PWD}
     container_name: mariadb
-    ports:
-      - 3306:3306
-    env_file: .env
+    restart: on-failure
+    env_file:
+      - .env
     volumes:
-      - db:/var/lib/mysql/
-    restart: always
+      - db_data:/var/lib/mysql
     networks:
-      - inception
+      - backend
+    environment:
+      MYSQL_ROOT_PWD: ${MYSQL_ROOT_PWD}
+      WP_DB_NAME: ${WP_DB_NAME}
+      WP_DB_USR: ${WP_DB_USR}
+      WP_DB_PWD: ${WP_DB_PWD}
+
+
+networks:
+  inception:
+    driver: bridge
+  back:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/tbillon/data/db_data
+  
+  wp_data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /home/tbillon/data/wp_data
+      
+# networks:
+#   inception:
+
+# volumes:
+#   wordpress: {}
+#     # driver: local
+#     # driver_opts: #Specify a list of options as key-value pairs to pass to the driver for this volume
+#     #   type: 'none' #no physical partition linked to mount point
+#     #   o: 'bind' #bind mount: file or directory on the host machine is mounted into a container
+#     #   device: ${PWD}/wordpress #$PWD expand current working dir to avoid specifying full paths
+
+#   db: {}
+#     # driver: local
+#     # driver_opts:
+#     #   type: 'none'
+#     #   o: 'bind'
+#     #   device: ${PWD}/database/
+
+# services:
+#   nginx:
+#     depends_on: #Express dependency between services. Start services in depedency order
+#       - wordpress
+#     build: ./requirements/nginx #build from the Dockerfile in the dir
+#     container_name: nginx
+#     ports:
+#       - 443:443
+#     volumes: #to reuse a volume across multiple services
+#       - wordpress:/var/www/
+#     restart: always #restarts containers that exit with zero ( success ) exit code
+#     networks: #Set the network containers connect to for the RUN instructions during build
+#       - inception
+
+#   wordpress:
+#     depends_on:
+#       - mariadb
+#     build: ./requirements/wordpress
+#     container_name: wordpress
+#     ports:
+#       - 9000:9000
+#     env_file: .env #specify en environement file to work with
+#     volumes:
+#         - wordpress:/var/www/
+#     restart: always
+#     networks:
+#       - inception
+
+#   mariadb:
+#     build: ./requirements/mariadb
+#     container_name: mariadb
+#     ports:
+#       - 3306:3306
+#     env_file: .env
+#     volumes:
+#       - db:/var/lib/mysql/
+#     restart: always
+#     networks:
+#       - inception
