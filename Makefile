@@ -6,12 +6,9 @@
 #    By: tbillon <tbillon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/06 09:35:58 by tanguy            #+#    #+#              #
-#    Updated: 2022/03/07 10:24:27 by tbillon          ###   ########.fr        #
+#    Updated: 2022/03/07 12:12:41 by tbillon          ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
-
-COMP_FILE = srcs/docker-compose.yml
-CLEAN = srcs/requirements/tools/clean.sh
 
 start:
 		sed -i 's/localhost/tbillon.42.fr/i' /etc/hosts
