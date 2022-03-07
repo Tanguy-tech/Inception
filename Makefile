@@ -20,7 +20,7 @@ start:
 		docker-compose --project-directory srcs -f srcs/docker-compose.yml up -d --build
 
 stop:
-		docker-compose --project-directory srcs -f srcs/docker-compose down
+		docker-compose --project-directory srcs -f srcs/docker-compose.yml down
 
 rm:
 		docker volume prune --force

@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.3"
 
 services:
 
@@ -73,7 +73,7 @@ services:
 networks:
   inception:
     driver: bridge
-  back:
+  backend:
     driver: bridge
 
 volumes:
