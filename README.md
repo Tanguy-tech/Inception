@@ -8,6 +8,9 @@ contact: tbillon@student.42lyon.fr
 🔗 USEFULL LINKS 🔗
 - Network bridges for Docker : https://docs.docker.com/network/bridge/
 - Docker vs Virtual Machine : https://geekflare.com/fr/docker-vs-virtual-machine/
+- WP core commands : https://developer.wordpress.org/cli/commands/core/
+- WWW.conf explained : https://myjeeva.com/php-fpm-configuration-101.html#pool-directives
+- Php config manual : https://www.php.net/manual/fr/install.fpm.configuration.php
 - option for Openssl : https://www.openssl.org/docs/man1.0.2/man1/openssl-req.html
 - appels systems : https://fr.wikipedia.org/wiki/Chown
 - Docker et références : https://docs.docker.com/engine/reference/builder/
