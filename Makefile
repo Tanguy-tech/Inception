@@ -6,7 +6,7 @@
 #    By: tbillon <tbillon@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/10/06 09:35:58 by tanguy            #+#    #+#              #
-#    Updated: 2022/03/03 10:59:11 by tbillon          ###   ########.fr        #
+#    Updated: 2022/03/07 10:15:49 by tbillon          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,7 @@ restartrm:
 		make -s start
 
 clear:
-		docker-compose --project-directory srcs -f srcs/docker-compose down --remove-orphans
+		docker-compose --project-directory srcs -f srcs/docker-compose.yml down --remove-orphans
 		docker image prune --all --force
 		make -s rm
 
