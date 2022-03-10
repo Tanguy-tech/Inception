@@ -1,44 +1,42 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Dockerfile                                         :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: tbillon <tbillon@student.42.fr>            +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/10/08 11:57:03 by tanguy            #+#    #+#              #
-#    Updated: 2022/03/07 09:49:44 by tbillon          ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+FROM	debian:buster
 
-FROM    debian:buster
-LABEL   maintainer="tbillon"
+RUN		apt-get -y update && apt-get -y upgrade && apt-get install -y apt-utils
+RUN		apt-get -y install  \	
+		wget                \
+		php7.3 php7.3-fpm   \
+		php-mysql			\
+		php-fpm 			\
+		php-pdo 			\
+		php-gd 				\
+		php-cli 			\
+		php-mbstring
 
-#update and upgrade system
-RUN apt-get -y update && apt-get -y upgrade
+RUN		wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+RUN		chmod +x wp-cli.phar
+RUN		mv wp-cli.phar /usr/local/bin/wp
 
-#install independents packages needed
-RUN apt-get -y install wget
-RUN apt-get -y install curl
-RUN apt-get -y install unzip
+RUN 	mkdir -p /var/www/html/wordpress
 
-#install php and all packages
-RUN     apt-get -y install php php-common
+# WORKDIR	/var/www/html/wordpress
 
-#download config && open rights
-RUN     curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-        && chmod +x wp-cli.phar \
-        && mv wp-cli.phar /usr/bin/wp
 
-#Copy config files for php
-COPY conf/php-fpm.conf /etc/php7.4/php-fpm.conf
-COPY conf/www.conf /etc/php7.4/php-fpm.d/www.conf
+RUN		wp core download --path=/var/www/html/wordpress --allow-root
+RUN		chown -R www-data:www-data /var/www/html/wordpress/*
+RUN		chmod -R 755 /var/www/html/wordpress/*
 
-#Define working directory (Define the working directory of the container)
-WORKDIR  /var/www/html/wordpress
+COPY	./tools/setup.sh /var/www/html/wordpress 
+RUN		chmod 777 /var/www/html/wordpress/setup.sh
 
-#Configure wordpress (700 code = rwx for the owner only)
-COPY    tools/init.sh ./
-RUN     chmod 700 init.sh
 
-#execute init.sh
-CMD	bash init.sh
+
+RUN		sed -i -e 's/listen = \/run\/php\/php7.3-fpm.sock/listen = wordpress:9000/g' \
+		/etc/php/7.3/fpm/pool.d/www.conf
+
+RUN		service php7.3-fpm start; service php7.3-fpm stop
+
+
+EXPOSE	9000
+
+ENTRYPOINT [ "/var/www/html/wordpress/setup.sh" ]
+
+# CMD 	["/usr/sbin/php-fpm7.3", "-F", "--nodaemonize"]

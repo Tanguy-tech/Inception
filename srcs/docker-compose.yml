@@ -1,92 +1,61 @@
-version: "3.3"
 
-services:
-
-  ngnix:
-    build: requirements/nginx/
-    container_name: ngnix
-    ports:
-      - "443:443"
-    restart: on-failure
-    env_file:
-      - .env
-    volumes:
-      - wordpress
-      - mariadb
-    networks:
-      - inception
-
-  wordpress:
-    build:
-      context: requirements/wordpress/
-      args:
-        MYSQL_HOST: ${MYSQL_HOST}
-        WP_DB_NAME: ${WP_DB_NAME}
-        WP_DB_USR: ${WP_DB_USR}
-        WP_DB_PWD: ${WP_DB_PWD}
-        WP_ADMIN_USR: ${WP_ADMIN_USR}
-        WP_ADMIN_PWD: ${WP_ADMIN_PWD}
-        WP_ADMIN_MAIL: ${WP_ADMIN_MAIL}
-    container_name: wordpress
-    restart: on-failure
-    env_file:
-      - .env
-    volumes:
-      - wp_data/var/www/html
-    depends_on:
-      - mariadb
-    networks:
-      - inception
-      - backend
-    environment:
-      MYSQL_HOST: ${MYSQL_HOST}
-      WP_DB_NAME: ${WP_DB_NAME}
-      WP_DB_USR: ${WP_DB_USR}
-      WP_DB_PWD: ${WP_DB_PWD}
-      WP_ADMIN_USR: ${WP_ADMIN_USR}
-      WP_ADMIN_PWD: ${WP_ADMIN_PWD}
-      WP_ADMIN_MAIL: ${WP_ADMIN_MAIL}
-  
-  mariadb:
-    build:
-      context: requirements/mariadb/
-      args:
-        MYSQL_ROOT_PWD: ${MYSQL_ROOT_PWD}
-        WP_DB_NAME: ${WP_DB_NAME}
-        WP_DB_USR: ${WP_DB_USR}
-        WP_DB_PWD: ${WP_DB_PWD}
-    container_name: mariadb
-    restart: on-failure
-    env_file:
-      - .env
-    volumes:
-      - db_data:/var/lib/mysql
-    networks:
-      - backend
-    environment:
-      MYSQL_ROOT_PWD: ${MYSQL_ROOT_PWD}
-      WP_DB_NAME: ${WP_DB_NAME}
-      WP_DB_USR: ${WP_DB_USR}
-      WP_DB_PWD: ${WP_DB_PWD}
-
-
-networks:
-  inception:
-    driver: bridge
-  backend:
-    driver: bridge
+version: '3.3'
 
 volumes:
-  db_data:
+  wp:
     driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/tbillon/data/db_data
-  
-  wp_data:
+    # driver_opts:
+    #   type: none
+    #   o: bind 
+    #   device: /home/tbillon/data/wp
+  db:
     driver: local
-    driver_opts:
-      o: bind
-      type: none
-      device: /home/tbillon/data/wp_data
+    # driver_opts:
+    #   type: none
+    #   o: bind 
+    #   device: /home/tbillon/data/db
+
+networks:
+  my-net:
+    driver: bridge
+ 
+services:
+  mariadb:
+    build: ./requirements/mariadb
+    container_name: mariadb
+    networks:
+       - my-net
+    volumes:
+      - db:/var/lib/mysql
+    env_file:
+      - .env
+    restart: always
+    tty:
+      true
+
+  wordpress:
+    build: ./requirements/wordpress
+    container_name: wordpress
+    networks:
+      - my-net
+    volumes:
+      - wp:/var/www/html
+    env_file:
+      - .env
+    restart: always
+    depends_on:
+      - mariadb
+    tty: true
+
+  nginx:
+    build: ./requirements/nginx
+    container_name: nginx
+    ports:
+      - 443:443
+    volumes:
+      - wp:/var/www/html
+    networks:
+      - my-net
+    restart: always
+    depends_on:
+      - wordpress
