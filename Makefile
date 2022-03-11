@@ -1,6 +1,6 @@
 all:
-	mkdir -p /hone/tbillon/data/wp_data
-	mkdir -p /hone/tbillon/data/db_data
+	mkdir -p /home/tbillon/data/wp_data
+	mkdir -p /home/tbillon/data/db_data
 	docker-compose -f srcs/docker-compose.yml up
 
 down:
