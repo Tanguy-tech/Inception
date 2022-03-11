@@ -1,6 +1,7 @@
 FROM	debian:buster
 
-RUN		apt-get -y update && apt-get -y upgrade && apt-get install -y apt-utils
+RUN		DEBIAN_FRONTEND=noninteractive apt-get -y update && apt-get -y upgrade && apt-get install -y apt-utils
+RUN		apt-get -y install postfix
 RUN		apt-get -y install  \	
 		wget                \
 		php7.3 php7.3-fpm   \
@@ -9,7 +10,10 @@ RUN		apt-get -y install  \
 		php-pdo 			\
 		php-gd 				\
 		php-cli 			\
-		php-mbstring
+		php-mbstring			
+
+RUN		mkfifo /var/spool/postfix/public/pickup
+RUN		service postfix restart
 
 RUN		wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN		chmod +x wp-cli.phar
@@ -33,7 +37,8 @@ RUN		sed -i -e 's/listen = \/run\/php\/php7.3-fpm.sock/listen = wordpress:9000/g
 		/etc/php/7.3/fpm/pool.d/www.conf
 
 #Start services 
-RUN		service php7.3-fpm start; service php7.3-fpm stop
+RUN		service php7.3-fpm start
+#RUN		service php7.3-fpm stop
 
 EXPOSE	9000
 

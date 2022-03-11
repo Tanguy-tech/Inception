@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 if [ ! -f /var/www/wordpress/wp-config.php ]
 then
 wp config create	--allow-root \

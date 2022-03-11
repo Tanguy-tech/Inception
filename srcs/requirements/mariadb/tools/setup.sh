@@ -10,8 +10,8 @@ then
 service mysql start
 apt-get install -y gettext-base
 envsubst < /etc//mysql/db.sql | mysql
-#mysqladmin -u root password $DB_ROOT_PASSWORD
-#service mysql stop
+mysqladmin -u root password $DB_ROOT_PASSWORD
+service mysql stop
 fi
 chown -R mysql:mysql /var/lib/mysql
 

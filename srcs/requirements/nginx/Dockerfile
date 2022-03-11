@@ -2,11 +2,12 @@ FROM	debian:buster
 
 RUN 	apt-get update -y && apt-get upgrade -y
 
-RUN 	apt-get install -y	\
+RUN 	DEBIAN_FRONTEND=nonintercative apt-get install -y	\
 		nginx				\
 		vim					\
 		openssl				\
-		wget				
+		wget				\
+		apt-utils	
 
 RUN 	rm -rf ./etc/nginx/sites-available/default
 RUN 	rm -rf ./etc/nginx/sites-enabled/default
