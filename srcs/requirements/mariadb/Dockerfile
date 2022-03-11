@@ -1,13 +1,13 @@
 
 FROM debian:buster
 
-# updating packages
+#Updating packages
 RUN apt-get update
 
-# software installation
-RUN apt-get install -y mariadb-server
+#Install mariadb 
+RUN apt-get install -y mariadb-server mariadb-client
 
-# copying mysql client commands
+#Copy configuration files
 COPY /conf/db.sql /etc/mysql/
 COPY /tools/setup.sh /
 

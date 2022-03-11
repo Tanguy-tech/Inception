@@ -2,21 +2,22 @@
 version: '3.3'
 
 volumes:
-  wp:
+  wp_data:
     driver: local
-    # driver_opts:
-    #   type: none
-    #   o: bind 
-    #   device: /home/tbillon/data/wp
-  db:
+    driver_opts:
+      type: none
+      o: bind 
+      device: /home/tbillon/data/wp
+      
+  db_data:
     driver: local
-    # driver_opts:
-    #   type: none
-    #   o: bind 
-    #   device: /home/tbillon/data/db
+    driver_opts:
+      type: none
+      o: bind 
+      device: /home/tbillon/data/db
 
 networks:
-  my-net:
+  inception:
     driver: bridge
  
 services:
@@ -24,22 +25,21 @@ services:
     build: ./requirements/mariadb
     container_name: mariadb
     networks:
-       - my-net
+       - inception
     volumes:
-      - db:/var/lib/mysql
+      - db_data:/var/lib/mysql
     env_file:
       - .env
     restart: always
-    tty:
-      true
+    tty: true
 
   wordpress:
     build: ./requirements/wordpress
     container_name: wordpress
     networks:
-      - my-net
+      - inception
     volumes:
-      - wp:/var/www/html
+      - wp_data:/var/www/html
     env_file:
       - .env
     restart: always
@@ -53,9 +53,9 @@ services:
     ports:
       - 443:443
     volumes:
-      - wp:/var/www/html
+      - wp_data:/var/www/html
     networks:
-      - my-net
+      - inception
     restart: always
     depends_on:
       - wordpress

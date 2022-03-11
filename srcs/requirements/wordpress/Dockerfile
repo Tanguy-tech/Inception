@@ -19,21 +19,21 @@ RUN 	mkdir -p /var/www/html/wordpress
 
 # WORKDIR	/var/www/html/wordpress
 
-
+#Set un and open rights 
 RUN		wp core download --path=/var/www/html/wordpress --allow-root
 RUN		chown -R www-data:www-data /var/www/html/wordpress/*
 RUN		chmod -R 755 /var/www/html/wordpress/*
 
+#Copy configuration files
 COPY	./tools/setup.sh /var/www/html/wordpress 
 RUN		chmod 777 /var/www/html/wordpress/setup.sh
 
-
-
+#Change config listen address in php7.3-fpm
 RUN		sed -i -e 's/listen = \/run\/php\/php7.3-fpm.sock/listen = wordpress:9000/g' \
 		/etc/php/7.3/fpm/pool.d/www.conf
 
+#Start services 
 RUN		service php7.3-fpm start; service php7.3-fpm stop
-
 
 EXPOSE	9000
 
