@@ -3,11 +3,12 @@ FROM	debian:buster
 RUN 	apt-get update -y && apt-get upgrade -y
 
 RUN 	DEBIAN_FRONTEND=nonintercative apt-get install -y	\
+		apt-utils			\
 		nginx				\
 		vim					\
 		openssl				\
 		wget				\
-		apt-utils	
+		procps && rm -rf /var/lib/apt/lists/*
 
 RUN 	rm -rf ./etc/nginx/sites-available/default
 RUN 	rm -rf ./etc/nginx/sites-enabled/default

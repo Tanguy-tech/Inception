@@ -2,8 +2,9 @@ FROM	debian:buster
 
 RUN		DEBIAN_FRONTEND=noninteractive apt-get -y update && apt-get -y upgrade && apt-get install -y apt-utils
 RUN		apt-get -y install postfix
-RUN		apt-get -y install  \	
+RUN		apt-get -y install  \
 		wget                \
+		systemd		    \
 		php7.3 php7.3-fpm   \
 		php-mysql			\
 		php-fpm 			\
@@ -37,6 +38,7 @@ RUN		sed -i -e 's/listen = \/run\/php\/php7.3-fpm.sock/listen = wordpress:9000/g
 		/etc/php/7.3/fpm/pool.d/www.conf
 
 #Start services 
+RUN		systemctl enable php7.3-fpm.service
 RUN		service php7.3-fpm start
 #RUN		service php7.3-fpm stop
 

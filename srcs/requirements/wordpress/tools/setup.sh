@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
-if [ ! -f /var/www/wordpress/wp-config.php ]
+if [ ! -f /var/www/html/wordpress/wp-config.php ]
 then
-wp config create	--allow-root \
+wp config create 	 --allow-root \
 					--skip-check \
 					--dbname=$DB_NAME \
 					--dbuser=$DB_USER \
@@ -11,7 +11,6 @@ wp config create	--allow-root \
 					--dbprefix=wp_ \
 					--path=/var/www/html/wordpress
 sleep 10
-fi
 
 wp core install		--allow-root \
 					--url=$WP_URL \
@@ -26,5 +25,5 @@ wp user create user	"$WP_REG_USER@$WP_URL" \
 					--role=author \
 					--user_pass=$WP_REG_USER_PASSWORD \
 					--path=/var/www/html/wordpress
-
+fi
 /usr/sbin/php-fpm7.3 -F --nodaemonize

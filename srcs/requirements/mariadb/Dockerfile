@@ -5,7 +5,7 @@ FROM debian:buster
 RUN apt-get update
 
 #Install mariadb 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y mariadb-server mariadb-client apt-utils
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils mariadb-server mariadb-client
 
 #Copy configuration files
 COPY /conf/db.sql /etc/mysql/
